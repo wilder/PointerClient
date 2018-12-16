@@ -33,6 +33,8 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
+    compile("com.jfoenix", "jfoenix", "8.0.8")
+    implementation("com.google.firebase", "firebase-admin", "6.6.0")
     testCompile("junit", "junit", "4.12")
 }
 
