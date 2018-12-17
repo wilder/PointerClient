@@ -16,6 +16,7 @@ import com.wilderpereira.presenters.MainPresenter
 class Application : javafx.application.Application(), MainContract.View {
 
     private lateinit var graphicsContext: GraphicsContext
+    private lateinit var canvas: Canvas
     private lateinit var presenter: MainContract.Presenter
 
     override fun start(primaryStage: Stage) {
@@ -27,6 +28,9 @@ class Application : javafx.application.Application(), MainContract.View {
 
     override fun displayCoordinates(coordinate: Coordinate) {
         println("Coordinate: $coordinate")
+        graphicsContext.clearRect(0.toDouble(), 0.toDouble(), canvas.width, canvas.height)
+        graphicsContext.fillOval(canvas.width/2 - coordinate.x*canvas.width/16,
+            canvas.height/2 - coordinate.y*canvas.width/16, 30.toDouble(), 30.toDouble())
     }
 
     override fun displayError(message: String) {
@@ -38,7 +42,7 @@ class Application : javafx.application.Application(), MainContract.View {
         primaryStage.initStyle(StageStyle.TRANSPARENT)
         val maximumWindowBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().maximumWindowBounds
 
-        val canvas = Canvas(maximumWindowBounds.getWidth(), maximumWindowBounds.getHeight())
+        canvas = Canvas(maximumWindowBounds.getWidth(), maximumWindowBounds.getHeight())
         graphicsContext = canvas.graphicsContext2D
 
         drawShapes(graphicsContext)
