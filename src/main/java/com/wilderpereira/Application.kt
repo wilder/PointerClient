@@ -1,10 +1,5 @@
 package com.wilderpereira
 
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.database.*
-import com.wilderpereira.utils.PropertiesUtils
 import javafx.scene.Scene
 import javafx.scene.paint.Color
 import javafx.stage.Stage
@@ -13,45 +8,29 @@ import javafx.scene.Group
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import java.awt.GraphicsEnvironment
-import java.io.FileInputStream
 import com.wilderpereira.domain.Coordinate
+import com.wilderpereira.presenters.MainContract
+import com.wilderpereira.presenters.MainPresenter
 
 
-class Application : javafx.application.Application() {
+class Application : javafx.application.Application(), MainContract.View {
 
-    private val FIREBASE_URL = "firebase.url"
-
-    private lateinit var database: FirebaseDatabase
-    private lateinit var ref: DatabaseReference
+    private lateinit var graphicsContext: GraphicsContext
+    private lateinit var presenter: MainContract.Presenter
 
     override fun start(primaryStage: Stage) {
-        setupFirebase()
+        presenter = MainPresenter()
+        presenter.bindView(this)
         setupStage(primaryStage)
-
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val coordinate = dataSnapshot.getValue(Coordinate::class.java)
-                println("Coordinate: ${coordinate}")
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("Nao")
-                println("The read failed: " + databaseError.code)
-            }
-        })
-
+        presenter.receiveCoordinates()
     }
 
-    private fun setupFirebase() {
-        val serviceAccount = FileInputStream("serviceAccountKey.json")
-        val options = FirebaseOptions.Builder()
-            .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-            .setDatabaseUrl(PropertiesUtils.readKey(FIREBASE_URL))
-            .build()
+    override fun displayCoordinates(coordinate: Coordinate) {
+        println("Coordinate: $coordinate")
+    }
 
-        FirebaseApp.initializeApp(options)
-        database = FirebaseDatabase.getInstance()
-        ref = database.getReference("7pid9ujoN2dZOSO3nxp8PkLSoHy2")
+    override fun displayError(message: String) {
+        println(message)
     }
 
     private fun setupStage(primaryStage: Stage) {
@@ -60,9 +39,9 @@ class Application : javafx.application.Application() {
         val maximumWindowBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().maximumWindowBounds
 
         val canvas = Canvas(maximumWindowBounds.getWidth(), maximumWindowBounds.getHeight())
-        val gc = canvas.graphicsContext2D
+        graphicsContext = canvas.graphicsContext2D
 
-        drawShapes(gc)
+        drawShapes(graphicsContext)
         root.children.add(canvas)
 
         primaryStage.scene = Scene(root)
