@@ -11,6 +11,7 @@ import java.awt.GraphicsEnvironment
 import com.wilderpereira.domain.Coordinate
 import com.wilderpereira.presenters.MainContract
 import com.wilderpereira.presenters.MainPresenter
+import com.wilderpereira.utils.lowPassFilter
 
 
 class Application : javafx.application.Application(), MainContract.View {
@@ -18,6 +19,7 @@ class Application : javafx.application.Application(), MainContract.View {
     private lateinit var graphicsContext: GraphicsContext
     private lateinit var canvas: Canvas
     private lateinit var presenter: MainContract.Presenter
+    private var accelerometerValues: Coordinate? = null
 
     override fun start(primaryStage: Stage) {
         presenter = MainPresenter()
@@ -27,10 +29,13 @@ class Application : javafx.application.Application(), MainContract.View {
     }
 
     override fun displayCoordinates(coordinate: Coordinate) {
-        println("Coordinate: $coordinate")
+//        println("Coordinate: $coordinate")
+
+        accelerometerValues = lowPassFilter(coordinate, accelerometerValues)
+
         graphicsContext.clearRect(0.toDouble(), 0.toDouble(), canvas.width, canvas.height)
-        graphicsContext.fillOval(canvas.width/2 - coordinate.x*canvas.width/16,
-            canvas.height/2 - coordinate.y*canvas.width/16, 30.toDouble(), 30.toDouble())
+        graphicsContext.fillOval(canvas.width/2 - accelerometerValues!!.x*canvas.width/12,
+            canvas.height/2 - accelerometerValues!!.y*canvas.height/12, 30.toDouble(), 30.toDouble())
     }
 
     override fun displayError(message: String) {
