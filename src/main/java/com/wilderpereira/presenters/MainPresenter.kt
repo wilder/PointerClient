@@ -25,16 +25,29 @@ class MainPresenter : MainContract.Presenter {
     }
 
     override fun receiveCoordinates() {
+
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val coordinate = dataSnapshot.getValue(Coordinate::class.java)
-                view.displayCoordinates(coordinate)
+                if(coordinate.state == 0) {
+                    view.clearScreen()
+                } else {
+                    displayCoordinates(coordinate)
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 view.displayError("The read failed: " + databaseError.code)
             }
         })
+    }
+
+    private fun displayCoordinates(coordinate: Coordinate) {
+        when (coordinate.type) {
+            "point" -> view.displayPoint(coordinate)
+            "focus" -> view.focus(coordinate)
+            else -> view.displayPoint(coordinate)
+        }
     }
 
     private fun initializeFirebase() {

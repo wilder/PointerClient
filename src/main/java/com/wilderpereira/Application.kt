@@ -28,18 +28,27 @@ class Application : javafx.application.Application(), MainContract.View {
         presenter.receiveCoordinates()
     }
 
-    override fun displayCoordinates(coordinate: Coordinate) {
-//        println("Coordinate: $coordinate")
+    override fun displayPoint(coordinate: Coordinate) {
 
         accelerometerValues = lowPassFilter(coordinate, accelerometerValues)
 
         graphicsContext.clearRect(0.toDouble(), 0.toDouble(), canvas.width, canvas.height)
         graphicsContext.fillOval(canvas.width/2 - accelerometerValues!!.x*canvas.width/12,
-            canvas.height/2 - accelerometerValues!!.y*canvas.height/12, 30.toDouble(), 30.toDouble())
+            canvas.height/2 - accelerometerValues!!.y*canvas.height/12, 75.toDouble(), 75.toDouble())
+
+        //TODO: clear everything after - no need to listen for stop event
+    }
+
+    override fun focus(coordinate: Coordinate) {
+
     }
 
     override fun displayError(message: String) {
         println(message)
+    }
+
+    override fun clearScreen() {
+        graphicsContext.clearRect(0.toDouble(), 0.toDouble(), canvas.width, canvas.height)
     }
 
     private fun setupStage(primaryStage: Stage) {

@@ -9,7 +9,9 @@ interface MainContract {
     }
 
     interface View {
-        fun displayCoordinates(coordinate: Coordinate)
         fun displayError(message: String)
+        fun displayPoint(coordinate: Coordinate)
+        fun focus(coordinate: Coordinate)
+        fun clearScreen()
     }
 }
