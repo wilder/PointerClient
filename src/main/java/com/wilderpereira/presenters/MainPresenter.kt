@@ -46,7 +46,7 @@ class MainPresenter : MainContract.Presenter {
         when (coordinate.type) {
             "point" -> view.displayPoint(coordinate)
             "focus" -> view.focus(coordinate)
-            else -> view.displayPoint(coordinate)
+            else -> view.focus(coordinate)
         }
     }
 

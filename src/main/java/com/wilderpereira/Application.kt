@@ -29,18 +29,36 @@ class Application : javafx.application.Application(), MainContract.View {
     }
 
     override fun displayPoint(coordinate: Coordinate) {
-
+        // TODO: move to presenter or coordinate manager
         accelerometerValues = lowPassFilter(coordinate, accelerometerValues)
+        val x = canvas.width/2 - accelerometerValues!!.x*canvas.width/12
+        val y = canvas.height/2 - accelerometerValues!!.y*canvas.height/12
 
-        graphicsContext.clearRect(0.toDouble(), 0.toDouble(), canvas.width, canvas.height)
-        graphicsContext.fillOval(canvas.width/2 - accelerometerValues!!.x*canvas.width/12,
-            canvas.height/2 - accelerometerValues!!.y*canvas.height/12, 75.toDouble(), 75.toDouble())
+        clearScreen()
+        graphicsContext.fill = Color.MEDIUMSLATEBLUE
+        graphicsContext.fillOval(x, y, 75.toDouble(), 75.toDouble())
 
         //TODO: clear everything after - no need to listen for stop event
     }
 
     override fun focus(coordinate: Coordinate) {
+        // TODO: move to presenter or coordinate manager
+        accelerometerValues = lowPassFilter(coordinate, accelerometerValues)
+        val x = canvas.width/2 - accelerometerValues!!.x*canvas.width/12
+        val y = canvas.height/2 - accelerometerValues!!.y*canvas.height/12
 
+        addShadowMask()
+        graphicsContext.clearRect(x, y, 95.toDouble(), 95.toDouble())
+    }
+
+    private fun addShadowMask() {
+        graphicsContext.fill = Color.web("#00000090")
+        fillWholeScreen()
+    }
+
+    private fun fillWholeScreen() {
+        clearScreen()
+        graphicsContext.fillRect(0.toDouble(), 0.toDouble(), canvas.width, canvas.height)
     }
 
     override fun displayError(message: String) {
@@ -59,20 +77,11 @@ class Application : javafx.application.Application(), MainContract.View {
         canvas = Canvas(maximumWindowBounds.getWidth(), maximumWindowBounds.getHeight())
         graphicsContext = canvas.graphicsContext2D
 
-        drawShapes(graphicsContext)
         root.children.add(canvas)
 
         primaryStage.scene = Scene(root)
         primaryStage.scene.fill = Color.TRANSPARENT
         primaryStage.show()
-    }
-
-    private fun drawShapes(graphicsContext: GraphicsContext) {
-        graphicsContext.fill = Color.MEDIUMSLATEBLUE;
-        graphicsContext.stroke = Color.BLUE;
-
-        graphicsContext.fillOval(0.toDouble(), 0.toDouble(), 30.toDouble(), 30.toDouble())
-        graphicsContext.strokeOval(60.toDouble(), 60.toDouble(), 30.toDouble(), 30.toDouble());
     }
 
 }
