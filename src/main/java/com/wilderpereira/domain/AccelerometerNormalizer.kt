@@ -1,6 +1,4 @@
-package com.wilderpereira.utils
-
-import com.wilderpereira.domain.Coordinate
+package com.wilderpereira.domain
 
 private const val ALPHA = 0.2f
 

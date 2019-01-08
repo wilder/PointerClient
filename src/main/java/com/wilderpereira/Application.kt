@@ -11,7 +11,7 @@ import java.awt.GraphicsEnvironment
 import com.wilderpereira.domain.Coordinate
 import com.wilderpereira.presenters.MainContract
 import com.wilderpereira.presenters.MainPresenter
-import com.wilderpereira.utils.lowPassFilter
+import com.wilderpereira.domain.lowPassFilter
 
 
 class Application : javafx.application.Application(), MainContract.View {
