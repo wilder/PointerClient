@@ -43,7 +43,7 @@ class MainPresenter : MainContract.Presenter {
     }
 
     private fun displayCoordinates(coordinate: Coordinate) {
-        when (coordinate.type) {
+        when (coordinate.mode) {
             "point" -> view.displayPoint(coordinate)
             "focus" -> view.focus(coordinate)
         }
